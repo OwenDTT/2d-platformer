@@ -26,9 +26,7 @@ public class Main {
         });
     }
 
-    /** Public so Game / screens can call it */
     public static void showMenu(JFrame frame) {
-        // clear out whatever was there
         frame.getContentPane().removeAll();
         frame.getContentPane().revalidate();
         frame.getContentPane().repaint();
@@ -46,11 +44,9 @@ public class Main {
                 frame.getContentPane().removeAll();
                 frame.getContentPane().add(game);
 
-                // **critical**: re‐layout & repaint before starting
                 frame.getContentPane().revalidate();
                 frame.getContentPane().repaint();
 
-                // enforce fixed size
                 frame.setSize(WIDTH, HEIGHT);
                 frame.setLocationRelativeTo(null);
 

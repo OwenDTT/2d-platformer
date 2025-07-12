@@ -40,16 +40,14 @@ public class Game extends JPanel implements ActionListener, KeyListener {
 
         player = new Player(50, 100);
         initLevel();
-        timer = new Timer(16, this);  // ~60 FPS
+        timer = new Timer(16, this);
     }
 
-    /** Call once this panel is added to the frame */
     public void start() {
         requestFocusInWindow();
         timer.start();
     }
 
-    /** Populate blocks[] based on difficulty */
     private void initLevel() {
         int[][] levelData;
         switch (difficulty) {
@@ -126,16 +124,13 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         player.update(blocks);
         Rectangle r = player.getBounds();
 
-        // Check right-edge
         if (r.x + r.width >= WIDTH) {
             int groundTop = HEIGHT - 50;
             if (r.y + r.height >= groundTop) {
-                // walked on ground → fail
                 gameFailed = true;
                 timer.stop();
                 showFailScreen();
             } else {
-                // landed on a platform → win
                 gameWon = true;
                 timer.stop();
                 showWinScreen();
@@ -146,7 +141,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         repaint();
     }
 
-    /** Show “You Win” screen */
     private void showWinScreen() {
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
         frame.getContentPane().removeAll();
@@ -177,7 +171,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         frame.setLocationRelativeTo(null);
     }
 
-    /** Show “Level Failed” screen */
     private void showFailScreen() {
         JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
         frame.getContentPane().removeAll();
@@ -225,7 +218,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         frame.setLocationRelativeTo(null);
     }
 
-    // --- KeyListener impl ---
     @Override public void keyPressed(KeyEvent e)  { player.keyPressed(e); }
     @Override public void keyReleased(KeyEvent e) { player.keyReleased(e); }
     @Override public void keyTyped(KeyEvent e)    { }

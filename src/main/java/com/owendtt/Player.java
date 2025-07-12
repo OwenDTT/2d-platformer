@@ -4,44 +4,55 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 public class Player {
     private int x, y;
-    private final int width = 40;
+    private final int width  = 40;
     private final int height = 60;
 
     private double velX = 0, velY = 0;
-    private final double speed = 4;
+    private final double speed        = 4;
     private final double jumpStrength = 14;
-    private final double gravity = 0.6;
+    private final double gravity      = 0.6;
+
+    private BufferedImage sprite;
 
     private boolean left, right, jumping;
     private int jumpCount = 0;
     private final int maxJumps = 2; // double-jump
 
     public Player(int startX, int startY) {
-        x = startX;
-        y = startY;
+        this.x = startX;
+        this.y = startY;
+
+        try {
+            sprite = ImageIO.read(
+                getClass().getResourceAsStream("/npc.png")
+            );
+        } catch (IOException | IllegalArgumentException e) {
+            e.printStackTrace();
+            sprite = null;
+        }
     }
 
     public void update(List<Block> blocks) {
-        // horizontal movement
-        if (left) velX = -speed;
+        if (left)       velX = -speed;
         else if (right) velX = speed;
-        else velX = 0;
+        else            velX = 0;
         x += velX;
 
-        // gravity
         velY += gravity;
-        y += velY;
+        y    += velY;
 
-        // collision & landing
         boolean landed = false;
         for (Block b : blocks) {
             if (getBounds().intersects(b.getBounds())) {
                 if (velY > 0 && y + height - velY <= b.getY()) {
-                    y = b.getY() - height;
+                    y    = b.getY() - height;
                     velY = 0;
                     landed = true;
                 }
@@ -51,17 +62,20 @@ public class Player {
             jumpCount = 0;
         }
 
-        // jumping
         if (jumping && jumpCount < maxJumps) {
             velY = -jumpStrength;
             jumpCount++;
-            jumping = false; // consume jump input
+            jumping = false;
         }
     }
 
     public void draw(Graphics g) {
-        g.setColor(Color.RED);
-        g.fillRect(x, y, width, height);
+        if (sprite != null) {
+            g.drawImage(sprite, x, y, width, height, null);
+        } else {
+            g.setColor(Color.RED);
+            g.fillRect(x, y, width, height);
+        }
     }
 
     public Rectangle getBounds() {
@@ -84,7 +98,6 @@ public class Player {
                 jumping = true;
                 break;
             default:
-                // no-op
         }
     }
 
@@ -104,7 +117,6 @@ public class Player {
                 jumping = false;
                 break;
             default:
-                // no-op
         }
     }
 }
